@@ -17,12 +17,68 @@ class SNAKE:
         self.direction = Vector2(1, 0)
         self.new_block = False
 
+        self.head_up = pygame.image.load('sprites/head_up.png').convert_alpha()
+        self.head_down = pygame.image.load('sprites/head_down.png').convert_alpha()
+        self.head_right = pygame.image.load('sprites/head_right.png').convert_alpha()
+        self.head_left = pygame.image.load('sprites/head_left.png').convert_alpha()
+
+        self.tail_up = pygame.image.load('sprites/tail_up.png').convert_alpha()
+        self.tail_down = pygame.image.load('sprites/tail_down.png').convert_alpha()
+        self.tail_right = pygame.image.load('sprites/tail_right.png').convert_alpha()
+        self.tail_left = pygame.image.load('sprites/tail_left.png').convert_alpha()
+
+        self.body_vertical = pygame.image.load('sprites/body_vertical.png').convert_alpha()
+        self.body_horizontal = pygame.image.load('sprites/body_horizontal.png').convert_alpha()
+
+        self.body_tr = pygame.image.load('sprites/body_topright.png').convert_alpha()
+        self.body_tl = pygame.image.load('sprites/body_topleft.png').convert_alpha()
+        self.body_br = pygame.image.load('sprites/body_bottomright.png').convert_alpha()
+        self.body_bl = pygame.image.load('sprites/body_bottomleft.png').convert_alpha()
+
+        self.head = self.head_up
+        self.tail = self.tail_up
+        self.body_fragment = self.body_vertical
+
     def draw_snake(self):
-        for block in self.body:
+        self.update_head_graphics()
+        self.update_tail_graphics()
+
+        for index, block in enumerate(self.body):
             block_rect = pygame.Rect(int(block.x * cell_size),
                                      int(block.y * cell_size),
                                      cell_size, cell_size)
-            pygame.draw.rect(screen, pygame.color.Color("blue"), block_rect)
+            if index == 0:
+                screen.blit(self.head, block_rect)
+            elif index == len(self.body) - 1:
+                screen.blit(self.tail, block_rect)
+            else:
+                previous_block = self.body[index + 1] - block
+                next_block = self.body[index - 1] - block
+                if previous_block.x == next_block.x:
+                    screen.blit(self.body_vertical, block_rect)
+                elif previous_block.y == next_block.y:
+                    screen.blit(self.body_horizontal, block_rect)
+                else:
+                    if previous_block.x == -1 and next_block.y == -1 or previous_block.y == -1 and next_block.x == -1:
+                        screen.blit(self.body_tl, block_rect)
+                    elif previous_block.x == -1 and next_block.y == 1 or previous_block.y == 1 and next_block.x == -1:
+                        screen.blit(self.body_bl, block_rect)
+                    elif previous_block.x == 1 and next_block.y == -1 or previous_block.y == -1 and next_block.x == 1:
+                        screen.blit(self.body_tr, block_rect)
+                    elif previous_block.x == 1 and next_block.y == 1 or previous_block.y == 1 and next_block.x == 1:
+                        screen.blit(self.body_br, block_rect)
+
+    def update_tail_graphics(self):
+        body_length = len(self.body)
+        tail_relation = self.body[body_length - 1] - self.body[body_length - 2]
+        if tail_relation == Vector2(1, 0):
+            self.tail = self.tail_right
+        elif tail_relation == Vector2(-1, 0):
+            self.tail = self.tail_left
+        elif tail_relation == Vector2(0, 1):
+            self.tail = self.tail_down
+        elif tail_relation == Vector2(0, -1):
+            self.tail = self.tail_up
 
     def move_snake(self):
         body_copy = self.body[:-1]
@@ -34,6 +90,17 @@ class SNAKE:
 
     def add_block(self):
         self.new_block = True
+
+    def update_head_graphics(self):
+        head_relation = self.body[1] - self.body[0]
+        if head_relation == Vector2(-1, 0):
+            self.head = self.head_right
+        elif head_relation == Vector2(1, 0):
+            self.head = self.head_left
+        elif head_relation == Vector2(0, -1):
+            self.head = self.head_down
+        elif head_relation == Vector2(0, 1):
+            self.head = self.head_up
 
 
 class FRUIT:
