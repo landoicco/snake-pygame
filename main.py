@@ -9,6 +9,7 @@ cell_number = 20
 screen = pygame.display.set_mode((cell_number * cell_size, cell_number * cell_size))
 clock = pygame.time.Clock()
 apple = pygame.image.load('sprites/apple.png').convert_alpha()
+game_font = pygame.font.Font(None, 25)
 
 
 class SNAKE:
@@ -135,6 +136,7 @@ class MAIN:
         self.draw_grass()
         self.fruit.draw_fruit()
         self.snake.draw_snake()
+        self.draw_score()
 
     def check_collisions(self):
         if self.fruit.pos == self.snake.body[0]:
@@ -165,6 +167,22 @@ class MAIN:
     def game_over(self):
         pygame.quit()
         sys.exit()
+
+    def draw_score(self):
+        score_text = str(len(self.snake.body) - 3)
+        score_surface = game_font.render(score_text, True, (56, 74, 12))
+        score_x = int(cell_size * cell_number - ((cell_size * cell_number) / 2))
+        score_y = int(cell_size * cell_number - 15)
+        score_rect = score_surface.get_rect(midbottom=(score_x, score_y))
+        apple_rect = apple.get_rect(midright=(score_rect.left, score_rect.centery))
+        bg_rect = pygame.Rect(apple_rect.left, apple_rect.top,
+                              apple_rect.width + score_rect.width + 10,
+                              apple_rect.height)
+
+        pygame.draw.rect(screen, pygame.Color(187, 199, 61), bg_rect)
+        screen.blit(score_surface, score_rect)
+        screen.blit(apple, apple_rect)
+        pygame.draw.rect(screen, (0, 0, 0), bg_rect, 2)
 
 
 SCREEN_UPDATE = pygame.USEREVENT
