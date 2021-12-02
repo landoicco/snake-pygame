@@ -185,7 +185,6 @@ while True:
             if event.key == pygame.K_UP:
                 if main_game.snake.direction.y != 1:
                     main_game.snake.direction = Vector2(0, -1)
-                main_game.snake.direction = Vector2(0, -1)
             if event.key == pygame.K_DOWN:
                 if main_game.snake.direction.y != -1:
                     main_game.snake.direction = Vector2(0, 1)
