@@ -16,7 +16,7 @@ game_font = pygame.font.Font(None, 25)
 class SNAKE:
     def __init__(self):
         self.body = [Vector2(5, 10), Vector2(4, 10), Vector2(3, 10)]
-        self.direction = Vector2(1, 0)
+        self.direction = Vector2(0, 0)
         self.new_block = False
 
         self.head_up = pygame.image.load('sprites/head_up.png').convert_alpha()
@@ -108,6 +108,10 @@ class SNAKE:
     def play_crunch_sound(self):
         self.crunch_sound.play()
 
+    def reset(self):
+        self.body = [Vector2(5, 10), Vector2(4, 10), Vector2(3, 10)]
+        self.direction = Vector2(0, 0)
+
 
 class FRUIT:
     def __init__(self):
@@ -149,6 +153,10 @@ class MAIN:
             self.fruit.randomize()
             self.snake.add_block()
 
+        for block in self.snake.body[1:]:
+            if block == self.fruit.pos:
+                self.fruit.randomize()
+
     def check_fail(self):
         if not 0 <= self.snake.body[0].x < cell_number or not 0 <= self.snake.body[0].y < cell_number:
             self.game_over()
@@ -171,8 +179,7 @@ class MAIN:
                         pygame.draw.rect(screen, grass_color, grass_rect)
 
     def game_over(self):
-        pygame.quit()
-        sys.exit()
+        self.snake.reset()
 
     def draw_score(self):
         score_text = str(len(self.snake.body) - 3)
