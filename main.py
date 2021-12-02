@@ -3,6 +3,7 @@ import pygame
 import random
 from pygame.math import Vector2
 
+pygame.mixer.pre_init(44100, -16, 2, 512)
 pygame.init()
 cell_size = 40
 cell_number = 20
@@ -39,6 +40,7 @@ class SNAKE:
         self.head = self.head_up
         self.tail = self.tail_up
         self.body_fragment = self.body_vertical
+        self.crunch_sound = pygame.mixer.Sound('apple_bite.ogg')
 
     def draw_snake(self):
         self.update_head_graphics()
@@ -103,6 +105,9 @@ class SNAKE:
         elif head_relation == Vector2(0, 1):
             self.head = self.head_up
 
+    def play_crunch_sound(self):
+        self.crunch_sound.play()
+
 
 class FRUIT:
     def __init__(self):
@@ -140,6 +145,7 @@ class MAIN:
 
     def check_collisions(self):
         if self.fruit.pos == self.snake.body[0]:
+            self.snake.play_crunch_sound()
             self.fruit.randomize()
             self.snake.add_block()
 
