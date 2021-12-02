@@ -8,6 +8,9 @@ pygame.init()
 cell_size = 40
 cell_number = 20
 screen = pygame.display.set_mode((cell_number * cell_size, cell_number * cell_size))
+snake_icon = pygame.image.load('snake_icon.png')
+pygame.display.set_icon(snake_icon)
+pygame.display.set_caption('Python by Lando (alpha v.1)')
 clock = pygame.time.Clock()
 apple = pygame.image.load('sprites/apple.png').convert_alpha()
 game_font = pygame.font.Font(None, 25)
